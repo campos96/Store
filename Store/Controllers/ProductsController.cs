@@ -92,11 +92,30 @@ namespace Store.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Brand,Sku,Description,CategoryId,Model")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Name,Brand,Sku,Description,CategoryId,Model")] Product product, IFormFile? frontPhoto, IFormFile? rearPhoto)
         {
             if (ModelState.IsValid)
             {
                 product.Id = Guid.NewGuid();
+
+                if (frontPhoto != null)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        frontPhoto.CopyTo(ms);
+                        product.FrontPhoto = ms.ToArray();
+                    }
+                }
+
+                if (rearPhoto != null)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        rearPhoto.CopyTo(ms);
+                        product.RearPhoto = ms.ToArray();
+                    }
+                }
+
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
