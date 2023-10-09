@@ -26,6 +26,41 @@ namespace Store.Controllers
             return View(await products.ToListAsync());
         }
 
+        // GET: Products/FrontPhoto/5
+        public async Task<IActionResult> FrontPhoto(Guid? id)
+        {
+            if (id == null || id == Guid.Empty)
+            {
+                return BadRequest();
+            }
+
+            var product = await _context.Products.FindAsync(id);
+            if (product == null || product.FrontPhoto == null)
+            {
+                return NotFound();
+            }
+
+            return File(product.FrontPhoto, "image/jpeg");
+        }
+
+
+        // GET: Products/RearPhoto/5
+        public async Task<IActionResult> RearPhoto(Guid? id)
+        {
+            if (id == null || id == Guid.Empty)
+            {
+                return BadRequest();
+            }
+
+            var product = await _context.Products.FindAsync(id);
+            if (product == null || product.RearPhoto == null)
+            {
+                return NotFound();
+            }
+
+            return File(product.RearPhoto, "image/jpeg");
+        }
+
         // GET: Products/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
@@ -92,7 +127,7 @@ namespace Store.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Brand,Sku,Description,CategoryId,Model")] Product product)
+        public async Task<IActionResult> Edit(Guid id, Product product, IFormFile? frontPhoto, IFormFile? rearPhoto)
         {
             if (id != product.Id)
             {
@@ -103,6 +138,24 @@ namespace Store.Controllers
             {
                 try
                 {
+                    if (frontPhoto != null)
+                    {
+                        using (var ms = new MemoryStream())
+                        {
+                            frontPhoto.CopyTo(ms);
+                            product.FrontPhoto = ms.ToArray();
+                        }
+                    }
+
+                    if (rearPhoto != null)
+                    {
+                        using (var ms = new MemoryStream())
+                        {
+                            rearPhoto.CopyTo(ms);
+                            product.RearPhoto = ms.ToArray();
+                        }
+                    }
+
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
@@ -156,14 +209,14 @@ namespace Store.Controllers
             {
                 _context.Products.Remove(product);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProductExists(Guid id)
         {
-          return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

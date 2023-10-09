@@ -21,6 +21,10 @@ namespace Store.Models
 
         public string? Model { get; set; }
 
+        public byte[]? FrontPhoto { get; set; }
+        
+        public byte[]? RearPhoto { get; set; }
+
         [ForeignKey(nameof(CategoryId))]
         public ProductCategory? Category { get; set; }
 

@@ -90,11 +90,9 @@ namespace Store.Controllers
         }
 
         // POST: Inventory/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,ProductId,Quantity,Uom,UpdateAt,UpdatedBy")] Inventory inventory)
+        public async Task<IActionResult> Edit(Guid id, Inventory inventory)
         {
             if (id != inventory.Id)
             {
@@ -158,14 +156,14 @@ namespace Store.Controllers
             {
                 _context.Inventory.Remove(inventory);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool InventoryExists(Guid id)
         {
-          return (_context.Inventory?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Inventory?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
