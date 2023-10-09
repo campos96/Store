@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Store.Models
 {
     public enum Uom { Unit = 1001, Box = 1002, Bag = 1003, Can = 1004, Bottle = 1005 }
 
+    [Index(nameof(ProductId), IsUnique = true)]
     public class Inventory
     {
         [Key]
