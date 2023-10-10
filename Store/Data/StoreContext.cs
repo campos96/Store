@@ -12,5 +12,6 @@ namespace Store.Data
         public DbSet<Product> Products { get; set; } = default!;
         public DbSet<ProductCategory> ProductCategories { get; set; } = default!;
         public DbSet<Store.Models.Inventory> Inventory { get; set; } = default!;
+        public DbSet<Store.Models.User> User { get; set; } = default!;
     }
 }
