@@ -1,0 +1,43 @@
+﻿@model Store.Models.LoginViewModel
+
+@{
+
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title text-center">Login</h3>
+                <form asp-action="Login">
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"> </label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger" />
+                    </div>
+                    <div class="mb-3 form-check">
+                        <label asp-for="RememberMe" class="form-check-label"> </label>
+                        <input asp-for="RememberMe" type="checkbox" class="form-check-input" />
+                    </div>
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <input type="submit" class="btn btn-primary" value="Login" />
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

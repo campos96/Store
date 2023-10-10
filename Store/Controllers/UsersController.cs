@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Store.Models;
 
 namespace Store.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly StoreContext _context;
@@ -22,9 +24,9 @@ namespace Store.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-              return _context.User != null ? 
-                          View(await _context.User.ToListAsync()) :
-                          Problem("Entity set 'StoreContext.User'  is null.");
+            return _context.User != null ? 
+                View(await _context.User.ToListAsync()) :
+                Problem("Entity set 'StoreContext.User'  is null.");
         }
 
         // GET: Users/Details/5
