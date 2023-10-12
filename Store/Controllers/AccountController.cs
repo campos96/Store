@@ -85,5 +85,10 @@ namespace Store.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
+
+        public IActionResult Index()
+        {
+            return View();
+        }
     }
 }

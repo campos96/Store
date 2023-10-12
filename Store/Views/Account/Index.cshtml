@@ -1,0 +1,34 @@
+﻿@model Store.Models.User;
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="row justify-content-center">
+    <div class="col-6 ">
+        <div class="card shadow">
+            <div class="card-header">
+                My profile
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <dv class="col">
+                        <img src="..." class="img-thumbnail"/>
+                    </dv>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastName" class="form-label">Last Name</label>
+                    <input asp-for="LastName" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
