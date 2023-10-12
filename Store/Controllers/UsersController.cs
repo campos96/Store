@@ -11,7 +11,7 @@ using Store.Models;
 
 namespace Store.Controllers
 {
-    [Authorize]
+    
     public class UsersController : Controller
     {
         private readonly StoreContext _context;
@@ -30,6 +30,7 @@ namespace Store.Controllers
         }
 
         // GET: Users/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null || _context.User == null)
@@ -51,6 +52,7 @@ namespace Store.Controllers
         public IActionResult Create()
         {
             return View();
+           
         }
 
         // POST: Users/Create
@@ -65,9 +67,12 @@ namespace Store.Controllers
                 user.Id = Guid.NewGuid();
                 _context.Add(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+               // return RedirectToAction(nameof(Index));
+                return RedirectToAction("Login", "Account");
             }
-            return View(user);
+          return View(user);
+            
+            
         }
 
         // GET: Users/Edit/5
