@@ -17,6 +17,24 @@ namespace Store.Controllers
             _context = context;
         }
 
+        public IActionResult Index()
+        {
+            var userIdentity = User.Identity as ClaimsIdentity;
+
+            var email = userIdentity.Claims
+                .Where(c => c.Type == ClaimTypes.Email)
+                .FirstOrDefault();
+
+            if (email == null)
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+
+            var user = _context.User.Where(u => u.Email == email.Value).FirstOrDefault();
+
+            return View(user);
+        }
+
         public IActionResult Login()
         {
             if (User.Identity!.IsAuthenticated)
@@ -99,11 +117,6 @@ namespace Store.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
-        }
-
-        public IActionResult Index()
-        {
-            return View();
         }
     }
 }
