@@ -1,4 +1,4 @@
-﻿@model Store.Models.User;
+﻿@model Store.Models.User
 @{
     ViewData["Title"] = "Edit";
 }
@@ -18,10 +18,11 @@
                 <form asp-action="Edit">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
-                    <input type="hidden" asp-for="Email" />
+                    <input type="hidden" asp-for="AccountId" />
+                    @* <input type="hidden" asp-for="Email" />
                     <input type="hidden" asp-for="Username" />
                     <input type="hidden" asp-for="Password" />
-                    <input type="hidden" asp-for="ConfirmPassword" />
+                    <input type="hidden" asp-for="ConfirmPassword" /> *@
                     <div class="mb-3">
                         <label asp-for="Name" class="form-label"></label>
                         <input asp-for="Name" class="form-control" />
@@ -32,14 +33,14 @@
                         <input asp-for="LastName" class="form-control" />
                         <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
-                    <div class="mb-3">
+                    @* <div class="mb-3">
                         <label asp-for="Email" class="form-label"></label>
                         <input asp-for="Email" class="form-control" readonly disabled />
                     </div>
                     <div class="mb-3">
                         <label asp-for="Username" class="form-label"></label>
                         <input asp-for="Username" class="form-control" readonly disabled />
-                    </div>
+                    </div> *@
 
                     <div class="row">
                         <div class="col-md-6">

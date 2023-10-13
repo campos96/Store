@@ -1,8 +1,8 @@
-﻿@model Store.Models.User
+﻿@model Store.Models.SignupViewModel
 
 
 @{
-
+    ViewData["Title"] = "Signup";
 }
 
 <div class="row justify-content-center">
@@ -18,8 +18,6 @@
                             <form asp-action="Signup">
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <div class="row">
-
-
                                     <div class="col-6">
                                         <div class="form-group mb-3">
                                             <label asp-for="Name" class="control-label"></label>
@@ -32,7 +30,6 @@
                                             <label asp-for="LastName" class="control-label">Last Name</label>
                                             <input asp-for="LastName" class="form-control" />
                                             <span asp-validation-for="LastName" class="text-danger"></span>
-
                                         </div>
                                     </div>
                                 </div>
@@ -70,6 +67,7 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

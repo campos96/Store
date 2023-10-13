@@ -31,9 +31,21 @@ namespace Store.Controllers
                 return RedirectToAction("Logout", "Account");
             }
 
-            var user = _context.User.Where(u => u.Email == email.Value).FirstOrDefault();
+            var account = _context.Accounts.Where(u => u.Email == email.Value).FirstOrDefault();
 
-            return View(user);
+            if (account == null)
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+
+            var user = _context.User.Where(u => u.AccountId == account.Id).FirstOrDefault();
+            if (user == null)
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+
+            var userAccount = new UserAccountViewModel { Account = account, User = user };
+            return View(userAccount);
         }
 
         public IActionResult Login()
@@ -54,20 +66,22 @@ namespace Store.Controllers
                 return View(login);
             }
 
-            var user = _context.User
+            var account = _context.Accounts
                 .Where(u => u.Email == login.Email && u.Password == login.Password)
                 .FirstOrDefault();
 
-            if (user == null)
+            if (account == null)
             {
                 ModelState.AddModelError(nameof(LoginViewModel.Password), "Invalid username or password.");
                 return View();
             }
 
+            var user = _context.User.Where(u => u.AccountId == account.Id).FirstOrDefault();
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.FullName),
-                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Email, account.Email),
                 new Claim("FullName", user.FullName),
                 new Claim(ClaimTypes.Role, "Administrator"),
             };
@@ -96,17 +110,35 @@ namespace Store.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Signup([Bind("Id,Name,LastName,Username,Email,Password,ConfirmPassword")] User user)
+        public async Task<IActionResult> Signup(SignupViewModel signup)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                user.Id = Guid.NewGuid();
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                // return RedirectToAction(nameof(Index));
-                return RedirectToAction("Login", "Account");
+                return View(signup);
             }
-            return View(user);
+
+            var account = new Account
+            {
+                Id = Guid.NewGuid(),
+                Username = signup.Username,
+                Email = signup.Email,
+                Password = signup.Password,
+            };
+
+            _context.Add(account);
+            await _context.SaveChangesAsync();
+
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                AccountId = account.Id,
+                Name = signup.Name,
+                LastName = signup.LastName,
+            };
+
+            _context.Add(user);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Login", "Account");
         }
 
         public IActionResult Forbidden()
@@ -135,12 +167,13 @@ namespace Store.Controllers
                 return RedirectToAction("Logout", "Account");
             }
 
-            var user = _context.User.Where(u => u.Email == email.Value).FirstOrDefault();
-            if (user == null)
+            var account = _context.Accounts.Where(u => u.Email == email.Value).FirstOrDefault();
+            if (account == null)
             {
                 return RedirectToAction("Logout", "Account");
             }
 
+            var user = _context.User.Where(u => u.AccountId == account.Id).FirstOrDefault();
             return View(user);
         }
 
@@ -162,7 +195,7 @@ namespace Store.Controllers
             {
                 return View(user);
             }
-           
+
             try
             {
                 _context.Update(user);
