@@ -14,9 +14,11 @@ namespace Store.Models
         public string Name { get; set; }
 
         [Required]
+        [Display(Name = "User Name")]
         public string Username { get; set; }
 
         [Required]
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
         [Required]

@@ -5,6 +5,7 @@ using Store.Models;
 using System.Security.Claims;
 using Store.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Store.Controllers
 {
@@ -87,6 +88,7 @@ namespace Store.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpGet]
         public IActionResult Signup()
         {
             return View();
@@ -117,6 +119,73 @@ namespace Store.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult Edit()
+        {
+            var userIdentity = User.Identity as ClaimsIdentity;
+
+            var email = userIdentity.Claims
+                .Where(c => c.Type == ClaimTypes.Email)
+                .FirstOrDefault();
+
+            if (email == null)
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+
+            var user = _context.User.Where(u => u.Email == email.Value).FirstOrDefault();
+            if (user == null)
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(User user)
+        {
+            var userIdentity = User.Identity as ClaimsIdentity;
+
+            var email = userIdentity.Claims
+                .Where(c => c.Type == ClaimTypes.Email)
+                .FirstOrDefault();
+
+            if (email == null)
+            {
+                return RedirectToAction("Logout", "Account");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(user);
+            }
+           
+            try
+            {
+                _context.Update(user);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(user.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+
+
+        }
+        private bool UserExists(Guid id)
+        {
+            return (_context.User?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
