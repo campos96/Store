@@ -63,15 +63,16 @@ namespace Store.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,ProductId,Quantity,Uom,UpdateAt,UpdatedBy")] Inventory inventory)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                inventory.Id = Guid.NewGuid();
-                _context.Add(inventory);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", inventory.ProductId);
+                return View(inventory);
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", inventory.ProductId);
-            return View(inventory);
+
+            inventory.Id = Guid.NewGuid();
+            _context.Add(inventory);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Inventory/Edit/5
@@ -101,28 +102,26 @@ namespace Store.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(inventory);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!InventoryExists(inventory.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", inventory.ProductId);
+                return View(inventory);
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", inventory.ProductId);
-            return View(inventory);
+
+            try
+            {
+                _context.Update(inventory);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!InventoryExists(inventory.Id))
+                {
+                    return NotFound();
+                }
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Inventory/Delete/5
