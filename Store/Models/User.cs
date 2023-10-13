@@ -14,6 +14,9 @@ namespace Store.Models
         public string Name { get; set; }
 
         [Required]
+        public string Username { get; set; }
+
+        [Required]
         public string LastName { get; set; }
 
         [Required]
@@ -22,6 +25,21 @@ namespace Store.Models
 
         [Required]
         public string Password { get; set; }
+
+        [Required]
+        public string ConfirmPassword { get; set; }
+
+        public byte[]? Photo { get; set; }
+
+        public string? Address { get; set; }
+
+        public string? City { get; set; }
+
+        public string? PostalCode { get; set; }
+
+        public string? Country { get; set; }
+
+        public string? Phone { get; set; }
 
         public string FullName => Name + " " + LastName;
     }

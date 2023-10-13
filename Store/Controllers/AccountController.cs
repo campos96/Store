@@ -94,7 +94,7 @@ namespace Store.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Signup([Bind("Id,Name,LastName,Email,Password")] User user)
+        public async Task<IActionResult> Signup([Bind("Id,Name,LastName,Username,Email,Password,ConfirmPassword")] User user)
         {
             if (ModelState.IsValid)
             {
