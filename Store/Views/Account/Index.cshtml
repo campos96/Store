@@ -10,9 +10,10 @@
                 My profile
             </div>
             <div class="card-body">
-                <div class="row">
-                    <dv class="col">
-                        <img src="..." class="img-thumbnail mb-3" />
+                <div class="row justify-content-center">
+                    <dv class="col-3" >
+                        <img class="img-fluid rounded-2" src="@Url.Action("Photo", "Account", new {id = Model.User.Id })" />
+                        
                     </dv>
                 </div>
                 <fieldset disabled>
@@ -52,6 +53,7 @@
                             <div class="mb-3">
                                 <label asp-for="User.Country" class="form-label"></label>
                                 <input asp-for="User.Country" class="form-control" />
+                               
                             </div>
                         </div>
                     </div>

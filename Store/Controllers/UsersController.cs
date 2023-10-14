@@ -60,10 +60,19 @@ namespace Store.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,LastName,Email,Password")] User user)
+        public async Task<IActionResult> Create([Bind("Id,Name,LastName,Email,Password")] User user, IFormFile? Photo)
         {
             if (ModelState.IsValid)
             {
+
+                if (Photo != null)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        Photo.CopyTo(ms);
+                        user.Photo = ms.ToArray();
+                    }
+                }
                 user.Id = Guid.NewGuid();
                 _context.Add(user);
                 await _context.SaveChangesAsync();

@@ -178,7 +178,7 @@ namespace Store.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(User user)
+        public async Task<IActionResult> Edit(User user, IFormFile? Photo)
         {
             var userIdentity = User.Identity as ClaimsIdentity;
 
@@ -194,6 +194,15 @@ namespace Store.Controllers
             if (!ModelState.IsValid)
             {
                 return View(user);
+            }
+
+            if (Photo != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    Photo.CopyTo(ms);
+                    user.Photo = ms.ToArray();
+                }
             }
 
             try
@@ -219,6 +228,22 @@ namespace Store.Controllers
         private bool UserExists(Guid id)
         {
             return (_context.User?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        public async Task<IActionResult> Photo(Guid? id)
+        {
+            if (id == null || id == Guid.Empty)
+            {
+                return BadRequest();
+            }
+
+            var acc = await _context.User.FindAsync(id);
+            if (acc == null || acc.Photo == null)
+            {
+                return NotFound();
+            }
+
+            return File(acc.Photo, "image/jpeg");
         }
     }
 }
