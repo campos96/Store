@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Store.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly StoreContext _context;
@@ -48,6 +49,48 @@ namespace Store.Controllers
             return View(userAccount);
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Signup()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Signup(SignupViewModel signup)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(signup);
+            }
+
+            var account = new Account
+            {
+                Id = Guid.NewGuid(),
+                Username = signup.Username,
+                Email = signup.Email,
+                Password = signup.Password,
+            };
+
+            _context.Add(account);
+            await _context.SaveChangesAsync();
+
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                AccountId = account.Id,
+                Name = signup.Name,
+                LastName = signup.LastName,
+            };
+
+            _context.Add(user);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Login", "Account");
+        }
+
+        [AllowAnonymous]
         public IActionResult Login()
         {
             if (User.Identity!.IsAuthenticated)
@@ -59,6 +102,7 @@ namespace Store.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel login)
         {
             if (!ModelState.IsValid)
@@ -102,56 +146,8 @@ namespace Store.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpGet]
-        public IActionResult Signup()
-        {
-            return View();
-        }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Signup(SignupViewModel signup)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(signup);
-            }
-
-            var account = new Account
-            {
-                Id = Guid.NewGuid(),
-                Username = signup.Username,
-                Email = signup.Email,
-                Password = signup.Password,
-            };
-
-            _context.Add(account);
-            await _context.SaveChangesAsync();
-
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                AccountId = account.Id,
-                Name = signup.Name,
-                LastName = signup.LastName,
-            };
-
-            _context.Add(user);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Login", "Account");
-        }
-
-        public IActionResult Forbidden()
-        {
-            return View();
-        }
-
-        [Authorize]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
-        }
+       
 
         [HttpGet]
         public IActionResult Edit()
@@ -225,10 +221,6 @@ namespace Store.Controllers
 
 
         }
-        private bool UserExists(Guid id)
-        {
-            return (_context.User?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
 
         public async Task<IActionResult> Photo(Guid? id)
         {
@@ -245,5 +237,22 @@ namespace Store.Controllers
 
             return File(acc.Photo, "image/jpeg");
         }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
+        }
+
+        private bool UserExists(Guid id)
+        {
+            return (_context.User?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        public IActionResult Forbidden()
+        {
+            return View();
+        }
+
     }
 }

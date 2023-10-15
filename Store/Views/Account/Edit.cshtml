@@ -10,19 +10,15 @@
                 My profile
             </div>
             <div class="card-body">
+
                 <div class="row justify-content-center">
-                    <dv class="col-3">
+
+                    <div class="col-3">
                         <img class="img-fluid rounded-2" src="@Url.Action("Photo", "Account", new {id = Model.Id })" />
 
-                    </dv>
+                    </div>
                 </div>
-               @* <div class="row">*@
-                   @* <div class="form-group">
-                        <label asp-for="Photo" class="control-label"></label>
-                        <input asp-for="Photo" type="file" class="form-control" accept="image/jpeg" />
-                        <span asp-validation-for="Photo" class="text-danger"></span>
-                    </div>*@
-               @* </div>*@
+
                 <form asp-action="Edit" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
@@ -33,10 +29,7 @@
                         <input asp-for="Photo" type="file" class="form-control" accept="image/jpeg" />
                         <span asp-validation-for="Photo" class="text-danger"></span>
                     </div>
-                    @* <input type="hidden" asp-for="Email" />
-                    <input type="hidden" asp-for="Username" />
-                    <input type="hidden" asp-for="Password" />
-                    <input type="hidden" asp-for="ConfirmPassword" /> *@
+
                     <div class="mb-3">
                         <label asp-for="Name" class="form-label"></label>
                         <input asp-for="Name" class="form-control" />
@@ -47,15 +40,6 @@
                         <input asp-for="LastName" class="form-control" />
                         <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
-                    @* <div class="mb-3">
-                        <label asp-for="Email" class="form-label"></label>
-                        <input asp-for="Email" class="form-control" readonly disabled />
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Username" class="form-label"></label>
-                        <input asp-for="Username" class="form-control" readonly disabled />
-                    </div> *@
-
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -87,7 +71,15 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-outline-dark w-100" type="submit">Editar</button>
+                    <div class="row">
+                        <div class="col">
+                            <a class="btn btn-outline-dark w-100" asp-action="Index">Cancel</a>
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-dark w-100 " type="submit">Edit</button>
+
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
