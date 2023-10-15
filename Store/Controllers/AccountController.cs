@@ -147,7 +147,7 @@ namespace Store.Controllers
         }
 
 
-       
+
 
         [HttpGet]
         public IActionResult Edit()
@@ -220,6 +220,53 @@ namespace Store.Controllers
             return RedirectToAction(nameof(Index));
 
 
+        }
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel changePassword)
+        {
+
+            var userIdentity = User.Identity as ClaimsIdentity;
+
+            var email = userIdentity.Claims
+                .Where(c => c.Type == ClaimTypes.Email)
+                .FirstOrDefault();
+
+            if (email == null)
+            {
+                return RedirectToAction(nameof(Logout));
+            }
+
+            var account = _context.Accounts.Where(u => u.Email == email.Value).FirstOrDefault();
+
+            if (account == null)
+            {
+                return RedirectToAction(nameof(Logout));
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(changePassword);
+            }
+
+            if (account.Password != changePassword.CurrentPassword)
+            {
+                ModelState.AddModelError(nameof(ChangePasswordViewModel.CurrentPassword), "Current Password is not valid.");
+                return View(changePassword);
+            }
+
+            account.Password = changePassword.NewPassword;
+            account.LastPasswordReset = DateTime.Now;
+            _context.Update(account);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Logout));
         }
 
         public async Task<IActionResult> Photo(Guid? id)
